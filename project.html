@@ -1,0 +1,160 @@
+// Project Structure:
+// - frontend/
+//    - index.html
+//    - login.html
+//    - signup.html
+//    - admin_dashboard.html
+//    - vendor_page.html
+//    - user_portal.html
+//    - cart.html
+// - backend/
+//    - app.js
+//    - routes/
+//        - admin.js
+//        - user.js
+//        - vendor.js
+//    - models/
+//        - User.js
+//        - Vendor.js
+//        - Product.js
+//        - Order.js
+//    - config/
+//        - db.js
+
+// --- BACK-END CODE ---
+
+// backend/app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const adminRoutes = require('./routes/admin');
+const userRoutes = require('./routes/user');
+const vendorRoutes = require('./routes/vendor');
+
+const app = express();
+const PORT = 5000;
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// Routes
+app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
+app.use('/vendor', vendorRoutes);
+
+// Database connection
+const dbURI = 'mongodb://localhost:27017/event_management';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('DB connection error:', err));
+
+app.listen(PORT, () => console.log(Server running on http://localhost:${PORT}));
+
+
+// backend/models/User.js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+});
+
+module.exports = mongoose.model('User', userSchema);
+
+
+// backend/models/Product.js
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String },
+  price: { type: Number, required: true },
+  vendor: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor' },
+});
+
+module.exports = mongoose.model('Product', productSchema);
+
+
+// backend/routes/admin.js
+const express = require('express');
+const router = express.Router();
+const Product = require('../models/Product');
+
+// Add Product
+router.post('/add-product', async (req, res) => {
+  try {
+    const product = new Product(req.body);
+    await product.save();
+    res.status(201).json({ message: 'Product added successfully', product });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch all Products
+router.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+
+
+// --- FRONT-END SAMPLE PAGE ---
+
+// frontend/login.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://localhost:5000/user/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Login successful');
+                window.location.href = '/user_portal.html';
+            } else {
+                alert(data.error);
+            }
+        });
+    </script>
+</body>
+</html>

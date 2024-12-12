@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 70%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .header {
+            background-color: #4a90e2;
+            color: #ffffff;
+            padding: 10px 0;
+            border-radius: 8px 8px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .dropdown {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .dropdown ul {
+            list-style: none;
+            padding: 0;
+        }
+        .dropdown li {
+            padding: 5px 0;
+            font-size: 16px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .button {
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #357ab8;
+        }
+        .logout {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">WELCOME USER</div>
+
+        <div class="dropdown">
+            <h3>Drop Down</h3>
+            <ul>
+                <li>Catering</li>
+                <li>Florist</li>
+                <li>Decoration</li>
+                <li>Lighting</li>
+            </ul>
+        </div>
+
+        <div class="buttons">
+            <button class="button">Vendor</button>
+            <button class="button">Cart</button>
+            <button class="button">Guest List</button>
+            <button class="button">Order Status</button>
+        </div>
+
+        <div class="logout">
+            <button class="button">Log Out</button>
+        </div>
+    </div>
+</body>
+</html>
